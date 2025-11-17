@@ -1,80 +1,84 @@
 <!DOCTYPE html>
 <html lang="pl">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Mini Plemiona</title>
-  <link rel="manifest" href="manifest.json">
-  <style>
-    body {
-      margin: 0;
-      background: #d9c7a3;
-      font-family: sans-serif;
-      user-select: none;
-    }
-    #game {
-      width: 100vw;
-      height: 100vh;
-      background: url('https://i.imgur.com/yyhQF9F.jpeg') center/cover no-repeat;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: flex-end;
-      padding-bottom: 20px;
-    }
-    #ui {
-      width: 95%;
-      background: rgba(0,0,0,0.5);
-      color: white;
-      padding: 10px;
-      border-radius: 10px;
-    }
-    button {
-      width: 100%;
-      padding: 10px;
-      margin-top: 10px;
-      border: none;
-      border-radius: 8px;
-      background: #8b5a2b;
-      color: white;
-      font-size: 18px;
-    }
-  </style>
-  <script>
-    if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.register('service-worker.js');
-    }
-  </script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mini Plemiona - Wioska</title>
+<link rel="manifest" href="manifest.json">
+<style>
+  body { margin:0; font-family:sans-serif; background:#d9c7a3; }
+  #resources { background: rgba(0,0,0,0.5); color:white; padding:10px; display:flex; justify-content:space-around; font-size:16px; }
+  #village { display:grid; grid-template-columns: repeat(4, 80px); grid-gap:10px; justify-content:center; margin:20px; }
+  .building { width:80px; height:80px; background:#8b5a2b; display:flex; align-items:center; justify-content:center; color:white; font-weight:bold; border-radius:10px; position:relative; }
+  .unit { width:20px; height:20px; background:red; border-radius:50%; position:absolute; top:0; left:0; }
+  #actions { display:flex; justify-content:center; margin:20px; }
+  button { margin:0 10px; padding:10px; border:none; border-radius:8px; background:#7b4f2b; color:white; font-size:16px; }
+</style>
+<script>
+if('serviceWorker' in navigator){ navigator.serviceWorker.register('service-worker.js'); }
+</script>
 </head>
 <body>
-  <div id="game">
-    <div id="ui">
-      <h2>Mini Plemiona</h2>
-      <p>Drewno: <span id="wood">0</span></p>
-      <p>Kamień: <span id="stone">0</span></p>
-      <p>Żelazo: <span id="iron">0</span></p>
-      <button onclick="gather()">Zbierz surowce</button>
-    </div>
-  </div>
+<div id="resources">
+  <div>Drewno: <span id="wood">0</span></div>
+  <div>Kamień: <span id="stone">0</span></div>
+  <div>Żelazo: <span id="iron">0</span></div>
+  <div>Jednostki: <span id="units">0</span></div>
+</div>
 
-  <script>
-    let wood = 0, stone = 0, iron = 0;
+<div id="village">
+  <div class="building" id="house">Dom</div>
+  <div class="building" id="barracks">Koszary</div>
+  <div class="building" id="lumber">Tartak</div>
+  <div class="building" id="quarry">Kamieniołom</div>
+</div>
 
-    function render() {
-      document.getElementById('wood').innerText = wood;
-      document.getElementById('stone').innerText = stone;
-      document.getElementById('iron').innerText = iron;
-    }
+<div id="actions">
+  <button onclick="gather('wood')">Zbierz drewno</button>
+  <button onclick="gather('stone')">Zbierz kamień</button>
+  <button onclick="recruit()">Rekrutuj jednostkę</button>
+</div>
 
-    function gather() {
-      wood += 5;
-      stone += 3;
-      iron += 1;
-      render();
-    }
+<script>
+let wood=0, stone=0, iron=0, units=0;
 
+function render(){
+  document.getElementById('wood').innerText=wood;
+  document.getElementById('stone').innerText=stone;
+  document.getElementById('iron').innerText=iron;
+  document.getElementById('units').innerText=units;
+}
+
+function gather(resource){
+  if(resource==='wood'){ wood+=5; }
+  if(resource==='stone'){ stone+=3; }
+  render();
+}
+
+function recruit(){
+  if(wood>=10 && stone>=5){
+    wood-=10; stone-=5; units++;
+    addUnit();
     render();
-  </script>
+  } else {
+    alert('Nie masz wystarczająco surowców!');
+  }
+}
+
+function addUnit(){
+  let barracks=document.getElementById('barracks');
+  let unit=document.createElement('div');
+  unit.className='unit';
+  barracks.appendChild(unit);
+  // prosta animacja ruchu w prawo w wiosce
+  let pos=0;
+  let id=setInterval(()=>{
+    if(pos>60){ clearInterval(id); }
+    unit.style.left=pos+'px'; pos+=2;
+  },50);
+}
+
+render();
+</script>
 </body>
 </html>
-
