@@ -1,1 +1,80 @@
-index.html
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Mini Plemiona</title>
+  <link rel="manifest" href="manifest.json">
+  <style>
+    body {
+      margin: 0;
+      background: #d9c7a3;
+      font-family: sans-serif;
+      user-select: none;
+    }
+    #game {
+      width: 100vw;
+      height: 100vh;
+      background: url('https://i.imgur.com/yyhQF9F.jpeg') center/cover no-repeat;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-end;
+      padding-bottom: 20px;
+    }
+    #ui {
+      width: 95%;
+      background: rgba(0,0,0,0.5);
+      color: white;
+      padding: 10px;
+      border-radius: 10px;
+    }
+    button {
+      width: 100%;
+      padding: 10px;
+      margin-top: 10px;
+      border: none;
+      border-radius: 8px;
+      background: #8b5a2b;
+      color: white;
+      font-size: 18px;
+    }
+  </style>
+  <script>
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('service-worker.js');
+    }
+  </script>
+</head>
+<body>
+  <div id="game">
+    <div id="ui">
+      <h2>Mini Plemiona</h2>
+      <p>Drewno: <span id="wood">0</span></p>
+      <p>Kamień: <span id="stone">0</span></p>
+      <p>Żelazo: <span id="iron">0</span></p>
+      <button onclick="gather()">Zbierz surowce</button>
+    </div>
+  </div>
+
+  <script>
+    let wood = 0, stone = 0, iron = 0;
+
+    function render() {
+      document.getElementById('wood').innerText = wood;
+      document.getElementById('stone').innerText = stone;
+      document.getElementById('iron').innerText = iron;
+    }
+
+    function gather() {
+      wood += 5;
+      stone += 3;
+      iron += 1;
+      render();
+    }
+
+    render();
+  </script>
+</body>
+</html>
+
